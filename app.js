@@ -3,9 +3,10 @@ var app = express();
 var ejs = require("ejs");
 var bodyParser = require("body-parser");
 var request = require("request");
-var rp = require("request-promise");
+var mongoose = require('mongoose');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 // http://api.football-data.org/v2/competitions/2114/standings
@@ -23,38 +24,6 @@ var leaguesReq = {
         "X-Auth-Token" : "43700807826d4a73a6bc70852eb1613a"
     }
 };
-
-function getLeagues(){
-    rp(leaguesReq).finally()
-    var usableLeagues = [];
-    for(var i = 0; i < leagues.length;i++){
-        if(leagues[i]["plan"] === "TIER ONE"){
-            usableLeagues.push(leagues[i]);
-        }
-    }
-    console.log(usableLeagues);
-    return usableLeagues;
-}
-async function getStandings(){
-    request(standingsReq, function(error,response,body){
-        if(!error){
-            var results = JSON.parse(body);
-            var data = results["standings"][0]["table"];
-            //console.log(data);
-        }
-        return data;
-    });
-
-}
-
-
-async function getData(){
-    var leagues = await getLeagues();
-    var standings = await getStandings();
-    console.log(leagues);
-    console.log(standings);
-    return {leagues:leagues, standings:standings};
-}
 
 app.get('/', function(req,res){
     request(standingsReq, function(error,response,body){
