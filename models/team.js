@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 
 var TeamSchema = new mongoose.Schema({
     name: String,
+    league: String,
+    leagueID: Number,
     points: Number,
     gamesPlayed: Number,
     wins: Number,
@@ -10,12 +12,11 @@ var TeamSchema = new mongoose.Schema({
     goalsScored: Number,
     goalsAgainst: Number,
     goalDifference: Number,
-  });
+});
   
-  var Item = mongoose.model('Team', ItemSchema);
-  
-  module.exports = {
-    Team: Team
-  }
+var Team = mongoose.model('Team', TeamSchema);
 
-  
+module.exports = {
+    Team: Team
+}
+
