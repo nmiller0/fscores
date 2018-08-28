@@ -1,0 +1,35 @@
+<% include partials/header %>
+
+<div class = "container" >
+    <div class ="row">
+        <div class = "col-md-3 col-sm-6">
+                
+        </div>
+        <div class = "col-md-3 col-sm-6">
+                
+        </div>
+        <div class = "col-md-3 col-sm-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Team</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% var count = 1  %>
+                    <% results.forEach(function(team){  %>
+                    <tr>
+                        <th><%= team["position"] %></th>
+                        <th><%= team["team"]["name"] %></th>
+                        <th><%= team["points"] %></th>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+<% include partials/footer %>

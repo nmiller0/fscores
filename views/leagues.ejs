@@ -1,0 +1,8 @@
+<% include partials/header %>
+<div class = "container"></div>
+    <ul class="list-group" >
+        <% leagues.forEach(function(league){ %>
+            <li class="list-group-item"><%= league["name"] %></li>
+        <% }); %>
+    </ul>
+<% include partials/footer %>
