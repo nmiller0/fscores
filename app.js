@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
-mongoose.connect("mongodb://localhost:27017/fscores", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
 
 app.use(bodyParser.urlencoded({extended: true}));
 // http://api.football-data.org/v2/competitions/2114/standings
@@ -62,7 +62,7 @@ app.get('/leagues', function(req,res){
     });
  });
 
-app.listen(3000, function(){
+app.listen(3001, function(){
     console.log("server started");
     teams.getTable();
 });

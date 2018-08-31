@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var request = require('request');
 var Team = require("../models/team").Team;
-mongoose.connect("mongodb://localhost:27017/fscores", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
 
 var standingsReq = {
     url : "http://api.football-data.org/v2/competitions/2021/standings",
@@ -17,16 +17,52 @@ module.exports = {
             if(!error){
                 var results = JSON.parse(body);
                 var data = results["standings"][0]["table"];
-                for(var i = 0; i < data.length; i++){
-                    if(Team.find({name : data[i]["team"]["name"]}) === []){
-                        var newTeam = {
-                            name : data[i]["team"]["name"]
-                        };
-                        Team.create(newTeam);
-                    }
-                }
-                console.log(Team.find());
+                data.forEach(function(team){
+                    var found = false;                    
+                    Team.find({name : team["team"]["name"]}, function(err, teams){
+                        if(teams.length === 0){
+                            var newTeam = new Team({
+                                name : team["team"]["name"],
+                                points: team["points"],
+                                gamesPlayed: team["playedGames"],
+                                wins: team["won"],
+                                losses: team["lost"],
+                                draws: team["draw"],
+                                goalsScored: team["goalsFor"],
+                                goalsAgainst: team["goalsAgainst"],
+                                goalDifference: team["goalDifference"]
+                            });
+                            newTeam.save(function (err, cat) {
+                                    if (err) {
+                                        console.log("ERR!");
+                                    } else {
+                                        console.log("CAT SAVED");
+                                        console.log(cat);
+                                }});
+                        } else {                            
+                            teams[0].set({
+                                points: team["points"],
+                                gamesPlayed: team["playedGames"],
+                                wins: team["won"],
+                                losses: team["lost"],
+                                draws: team["draw"],
+                                goalsScored: team["goalsFor"],
+                                goalsAgainst: team["goalsAgainst"],
+                                goalDifference: team["goalDifference"]
+                            });
+                            teams[0].save();
+                        }
+                    });
+                });
+            } else {
+                console.log(reponse);
+                console.log(error);
             }
+            
+            Team.find({}, function(err, teams){
+                console.log("FINDING TEAMS");
+                console.log(teams);
+            });
         });
     }
 }
