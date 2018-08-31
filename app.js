@@ -7,6 +7,7 @@ var request = require("request");
 var mongoose = require('mongoose');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
+var Team = require("./models/team").Team;
 
 mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
 
@@ -63,12 +64,14 @@ app.get('/leagues', function(req,res){
  });
 
  app.get("/league/:id", function(req, res){
-
+    Team.find({leagueID: req.params.id}, function(err, teams){
+        res.render("home.ejs", {results:teams});
+    });
  });
 
 
 
 app.listen(3001, function(){
     console.log("server started");
-    teams.getTable(2021);
+    //teams.getTable(2021);
 });
