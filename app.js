@@ -62,7 +62,13 @@ app.get('/leagues', function(req,res){
     });
  });
 
+ app.get("/league/:id", function(req, res){
+
+ });
+
+
+
 app.listen(3001, function(){
     console.log("server started");
-    teams.getTable();
+    teams.getTable(2021);
 });
