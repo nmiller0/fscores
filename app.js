@@ -1,11 +1,15 @@
+var teams = require("./controllers/teams");
 var express = require("express");
 var app = express();
 var ejs = require("ejs");
 var bodyParser = require("body-parser");
 var request = require("request");
-var rp = require("request-promise");
+var mongoose = require('mongoose');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
+var Team = require("./models/team").Team;
+
+mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
 
 app.use(bodyParser.urlencoded({extended: true}));
 // http://api.football-data.org/v2/competitions/2114/standings
@@ -23,38 +27,6 @@ var leaguesReq = {
         "X-Auth-Token" : "43700807826d4a73a6bc70852eb1613a"
     }
 };
-
-function getLeagues(){
-    rp(leaguesReq).finally()
-    var usableLeagues = [];
-    for(var i = 0; i < leagues.length;i++){
-        if(leagues[i]["plan"] === "TIER ONE"){
-            usableLeagues.push(leagues[i]);
-        }
-    }
-    console.log(usableLeagues);
-    return usableLeagues;
-}
-async function getStandings(){
-    request(standingsReq, function(error,response,body){
-        if(!error){
-            var results = JSON.parse(body);
-            var data = results["standings"][0]["table"];
-            //console.log(data);
-        }
-        return data;
-    });
-
-}
-
-
-async function getData(){
-    var leagues = await getLeagues();
-    var standings = await getStandings();
-    console.log(leagues);
-    console.log(standings);
-    return {leagues:leagues, standings:standings};
-}
 
 app.get('/', function(req,res){
     request(standingsReq, function(error,response,body){
@@ -91,6 +63,26 @@ app.get('/leagues', function(req,res){
     });
  });
 
-app.listen(3000, function(){
+ app.get("/league/:id", function(req, res){
+    Team.find({leagueID: req.params.id}, function(err, foundTeams){
+        console.log(foundTeams);
+        if(foundTeams.length != 0){
+            console.log('Rendering...');
+            res.render("home.ejs", {results:foundTeams});
+        } else {
+            console.log('Getting Table!');
+            
+            teams.getTable(req.params.id);
+            Team.find({leagueID: req.params.id}, function(err, foundTeams){
+                res.render("home.ejs", {results:foundTeams});
+            });
+        }
+    });
+ });
+
+
+
+app.listen(3001, function(){
     console.log("server started");
+    //teams.getTable(2021);
 });

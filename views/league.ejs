@@ -12,8 +12,8 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Team</th>
-                        <th>GP</th>
                         <th>Points</th>
                     </tr>
                 </thead>
@@ -21,9 +21,9 @@
                     <% var count = 1  %>
                     <% results.forEach(function(team){  %>
                     <tr>
-                        <th><%= team.name %></th>
-                        <th><%= team.gamesPlayed %></th>
-                        <th><%= team.points %></th>
+                        <th><%= team["position"] %></th>
+                        <th><%= team["team"]["name"] %></th>
+                        <th><%= team["points"] %></th>
                     </tr>
                     <% }); %>
                 </tbody>
