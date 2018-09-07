@@ -84,5 +84,5 @@ app.get('/leagues', function(req,res){
 
 app.listen(3001, function(){
     console.log("server started");
-    //teams.getTable(2021);
+    teams.getTable(2021);
 });

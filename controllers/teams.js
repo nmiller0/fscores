@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var request = require('request');
 var Team = require("../models/team").Team;
 mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
-
+var http = require('http');
+var fs = require('fs');
 // var standingsReq = {
 //     url : "http://api.football-data.org/v2/competitions/2021/standings",
 //     headers: {
@@ -32,9 +33,14 @@ module.exports = {
                 var data = results["standings"][0]["table"];
 
                 data.forEach(function(team){
-
+                    console.log(team);
                     Team.find({name : team["team"]["name"]}, function(err, teams){
                         if(teams.length === 0){
+                            var fileName = "/res/crests/"+ team["team"]["name"] +".svg";
+                            var file = fs.createWriteStream(fileName);
+                            var request = http.get(team["team"]["crestURL"], function(response) {
+                                response.pipe(file);
+                            });
                             var newTeam = new Team({
                                 name : team["team"]["name"],
                                 leagueID: id, 
@@ -45,7 +51,8 @@ module.exports = {
                                 draws: team["draw"],
                                 goalsScored: team["goalsFor"],
                                 goalsAgainst: team["goalsAgainst"],
-                                goalDifference: team["goalDifference"]
+                                goalDifference: team["goalDifference"],
+                                clubCrest : fileName 
                             });
                             newTeam.save(function (err, cat) {
                                     if (err) {
@@ -54,7 +61,16 @@ module.exports = {
                                         console.log("CAT SAVED");
                                         console.log(cat);
                                 }});
-                        } else {                            
+                        } else {
+                            var fileName = "res/crests/"+ team["team"]["name"] +".svg";
+                            var file = fs.createWriteStream(fileName);
+                            var url = team["team"]["crestURL"];
+                            console.log(url);
+                            if (typeof url != 'undefined'){
+                                var request = http.get("http://"+ team["team"]["crestURI"], function(response) {
+                                    response.pipe(file);
+                                });
+                            }     
                             teams[0].set({
                                 points: team["points"],
                                 gamesPlayed: team["playedGames"],
@@ -64,7 +80,8 @@ module.exports = {
                                 draws: team["draw"],
                                 goalsScored: team["goalsFor"],
                                 goalsAgainst: team["goalsAgainst"],
-                                goalDifference: team["goalDifference"]
+                                goalDifference: team["goalDifference"],
+                                clubCrest : fileName
                             });
                             teams[0].save();
                         }

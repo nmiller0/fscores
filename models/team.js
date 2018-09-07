@@ -12,6 +12,7 @@ var TeamSchema = new mongoose.Schema({
     goalsScored: Number,
     goalsAgainst: Number,
     goalDifference: Number,
+    clubCrest: String
 });
   
 var Team = mongoose.model('Team', TeamSchema);
