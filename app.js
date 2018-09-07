@@ -65,16 +65,15 @@ app.get('/leagues', function(req,res){
 
  app.get("/league/:id", function(req, res){
     Team.find({leagueID: req.params.id}, function(err, foundTeams){
-        console.log(foundTeams);
         if(foundTeams.length != 0){
             console.log('Rendering...');
-            res.render("home.ejs", {results:foundTeams});
+            res.render("league.ejs", {results:foundTeams});
         } else {
             console.log('Getting Table!');
             
             teams.getTable(req.params.id);
             Team.find({leagueID: req.params.id}, function(err, foundTeams){
-                res.render("home.ejs", {results:foundTeams});
+                res.render("league.ejs", {results:foundTeams});
             });
         }
     });
