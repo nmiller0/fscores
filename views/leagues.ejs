@@ -1,8 +1,14 @@
 <% include partials/header %>
 <div class = "container"></div>
-    <ul class="list-group" >
-        <% leagues.forEach(function(league){ %>
-            <li class="list-group-item"><%= league["name"] %></li>
-        <% }); %>
-    </ul>
+    <div class="row">
+        <div class="col-sm"> </div>
+            <div class="col-sm">
+            <ul class="list-group border" style="margin: 0 auto;" >
+            <% leagues.forEach(function(league){ %>
+                <li class="list-group-item"><a href = <%= "/league/" + league["id"].toString(); %> ><%= league["name"] + " (" + league["area"]["name"]+")" %> </a></li>
+            <% }); %>
+            </ul>
+        </div>
+        <div class="col-sm"></div></div>
+  </div>
 <% include partials/footer %>
