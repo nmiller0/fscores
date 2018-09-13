@@ -83,5 +83,8 @@ module.exports = {
             });
 
         });
+    },
+    sortTeams: function sortTeams(a,b){
+        return (parseInt(b["points"]) - parseInt(a["points"]))
     }
 }
