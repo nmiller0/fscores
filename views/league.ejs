@@ -2,18 +2,20 @@
 
 <div class = "container" >
     <div class ="row">
-        <div class = "col-md-3 col-sm-6">
-                
-        </div>
-        <div class = "col-md-3 col-sm-6">
-                
-        </div>
-        <div class = "col-md-3 col-sm-6">
-            <table class="table">
-                <thead>
+        <div class = "col-sm"></div>
+        <div class = "col-sm ">
+            <table class="table table-hover border " style= "margin: 0 auto;" >
+                <thead class = "thead-light" >
                     <tr>
                         <th>#</th>
                         <th>Team</th>
+                        <th>Games Played</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Draws</th>
+                        <th>Goals Scored</th>
+                        <th>Goals Conceded</th>
+                        <th>Goal Difference</th>
                         <th>Points</th>
                     </tr>
                 </thead>
@@ -21,15 +23,23 @@
                     <% var count = 1  %>
                     <% results.forEach(function(team){  %>
                     <tr>
-                        <th><%= team["position"] %></th>
-                        <th><%= team["team"]["name"] %></th>
+                        <th><%= count %></th>
+                        <th><%= team["name"] %></th>
+                        <th><%= team["gamesPlayed"] %></th>
+                        <th><%= team["wins"] %></th>
+                        <th><%= team["losses"] %></th>
+                        <th><%= team["draws"] %></th>
+                        <th><%= team["goalsScored"] %></th>
+                        <th><%= team["goalsAgainst"] %></th>
+                        <th><%= team["goalDifference"] %></th>
                         <th><%= team["points"] %></th>
+                        <% count++; %>
                     </tr>
                     <% }); %>
                 </tbody>
             </table>
         </div>
-        
+        <div class = "col-sm"></div>
     </div>
 </div>
 <% include partials/footer %>
