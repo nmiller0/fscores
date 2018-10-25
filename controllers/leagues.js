@@ -1,10 +1,14 @@
 
 var mongoose = require('mongoose');
+var Bottleneck = require("bottleneck");
 var request = require('request');
+var League = require("../models/league").League;
 var Team = require("../models/team").Team;
 mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
 
-var savedLeagues = [];
+const limiter = new Bottleneck({
+    minTime: 30000
+  });
 
 function genStandingsReq(id){
     var standingsReq = {
@@ -24,9 +28,33 @@ var leaguesReq = {
 };
 
 module.exports = {
+    getLeagues: function getLeagues(){
+        console.log("getLeagues fired!");     
+        request(leaguesReq, function(error,response,body){
+            if(!error){
+                var leagues = JSON.parse(body);
+                var usableLeagues = [];
+                for(var i = 0; i < leagues["competitions"].length;i++){
+                    var TIER = leagues["competitions"][i]["plan"];
+                    if(TIER === 'TIER_ONE'){
+                        usableLeagues.push(leagues["competitions"][i]);
+                        var newLeague = new League({name : leagues["competitions"][i]["name"], leagueID :leagues["competitions"][i]["id"]});
+                        newLeague.save(function (err, cat) {
+                            if (err) {
+                                console.log("ERR!");
+                            } else {
+                                console.log("CAT SAVED");
+                                console.log(cat);
+                        }});
+                    }
+                }
+            }
+        });
+    },
     getTable: function getTable(id)
     {
         var standingsReq = genStandingsReq(id);
+        setTimeout(function(){}, 10000);
         request(standingsReq, function(error,response,body){
             if(!error){
                 var results = JSON.parse(body);
@@ -86,29 +114,16 @@ module.exports = {
 
         });
     },
-    sortTeams: function sortTeams(a,b){
-        return (parseInt(b["points"]) - parseInt(a["points"]))
-    },
-    getLeagues: function getLeagues(){
-        console.log("getLeagues fired!");     
-        request(leaguesReq, function(error,response,body){
-            if(!error){
-                var leagues = JSON.parse(body);
-                var usableLeagues = [];
-                for(var i = 0; i < leagues["competitions"].length;i++){
-                    //console.log(leagues["competitions"][i]);
-                    //console.log(leagues["competitions"][i]["plan"]);
-                    var TIER = leagues["competitions"][i]["plan"];
-                    //console.log(typeof "TIER ONE");
-                    //console.log(TIER.trim() == 'TIER ONE'.trim());
-                    //console.log(TIER.trim() + " == " + "TIER ONE".trim());
-                    if(TIER === 'TIER_ONE'){
-                        usableLeagues.push(leagues["competitions"][i]);
-                    }
-                }
-                savedLeagues = usableLeagues;
-            }
+    updateTables: function updateTables(){
+        League.find(function(err, leagues){
+            console.log(leagues);
+            leagues.forEach(function(id){
+                console.log(id["leagueID"]);
+                limiter.submit(module.exports.getTable, id["leagueID"], function(){
+                    console.log("job ran!!");
+                })
+                //module.exports.getTable(id["leagueID"]);
+            });
         });
     }
 }
-
