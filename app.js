@@ -1,4 +1,5 @@
 var teams = require("./controllers/teams");
+var leagues = require("./controllers/leagues");
 var express = require("express");
 var app = express();
 var ejs = require("ejs");
@@ -8,12 +9,11 @@ var mongoose = require('mongoose');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 var Team = require("./models/team").Team;
-
+var schedule = require("node-schedule");
 mongoose.connect("mongodb://localhost:27018/fscores", { useNewUrlParser: true });
 
 app.use(bodyParser.urlencoded({extended: true}));
-// http://api.football-data.org/v2/competitions/2114/standings
-//http://api.football-data.org/v2/competitions/
+
 var standingsReq = {
     url : "http://api.football-data.org/v2/competitions/2021/standings",
     headers: {
@@ -87,5 +87,7 @@ app.get('/leagues', function(req,res){
 
 app.listen(3001, function(){
     console.log("server started");
+    leagues.updateTables();
+    // var cron = schedule.scheduleJob("*/5 * * * *", teams.getLeagues);
     //teams.getTable(2021);
 });
