@@ -29,14 +29,7 @@ var leaguesReq = {
 };
 
 app.get('/', function(req,res){
-    request(standingsReq, function(error,response,body){
-        if(!error){
-            var results = JSON.parse(body);
-            var data = results["standings"][0]["table"];
-            //console.log(data);
-            res.render("home.ejs", {results:data});
-        }
-    });
+    res.redirect("/leagues");
 });
 
 app.get('/leagues', function(req,res){
@@ -83,11 +76,7 @@ app.get('/leagues', function(req,res){
     });
  });
 
-
-
 app.listen(3001, function(){
     console.log("server started");
     leagues.updateTables();
-    // var cron = schedule.scheduleJob("*/5 * * * *", teams.getLeagues);
-    //teams.getTable(2021);
 });
