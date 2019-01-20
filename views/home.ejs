@@ -1,35 +1,7 @@
 <% include partials/header %>
-
-<div class = "container" >
-    <div class ="row">
-        <div class = "col-md-3 col-sm-6">
-                
+        <div style="margin: 0 auto" class = "col-md-6">
+            <h2>Welcome to F-Scores</h2>
+            <p>A simple football scores website, built using Node.js, Bootstrap, and MongoDB.</p>
+            <p><a href="/leagues">Click here to continue</a></p>
         </div>
-        <div class = "col-md-3 col-sm-6">
-                
-        </div>
-        <div class = "col-md-3 col-sm-6">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>GP</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% var count = 1  %>
-                    <% results.forEach(function(team){  %>
-                    <tr>
-                        <th><%= team.name %></th>
-                        <th><%= team.gamesPlayed %></th>
-                        <th><%= team.points %></th>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-        
-    </div>
-</div>
 <% include partials/footer %>
