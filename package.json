@@ -4,6 +4,7 @@
   "description": "An app that displays basic football scores info through API",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Neal Miller",
